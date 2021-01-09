@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), DataReceiver {
 
-    private var  asyncRequest : CustomAsyncTask = CustomAsyncTask(this)
+    private val asyncRequest : CustomAsyncTask = CustomAsyncTask(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
