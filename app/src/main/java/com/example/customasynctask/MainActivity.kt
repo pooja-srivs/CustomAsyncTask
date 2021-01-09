@@ -3,34 +3,47 @@ package com.example.customasynctask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), DataReceiver {
 
-    private lateinit var  networkCall : NetworkRequest
-    private lateinit var handler: CustomHandler
+    private var  asyncRequest : CustomAsyncTask = CustomAsyncTask(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btn_lambda.setOnClickListener{
+        btn_request.setOnClickListener{
 
-         //   handler = CustomHandler(this)
-            networkCall = NetworkRequest(this)
+            asyncRequest.execute()
+        }
 
-            if (!networkCall.isAlive){
-                networkCall.start()
-            }
+        btn_cancel.setOnClickListener {
+            asyncRequest.cancel()
         }
     }
 
     override fun Response(message: String) {
 
-     /*   Log.d("*** Message WHAT ***", ""+message.what)
-        Log.d("*** Message OBJ ***", ""+message.obj)
-     */   Log.d("*** Response Activity ***", ""+message)
+        tv_result.setText(message)
 
+        Log.d("*** Response Activity ***", ""+message)
+
+    }
+
+    override fun progress(showProgress: Boolean) {
+        if (showProgress){
+            progress.visibility = View.VISIBLE
+        }else {
+            progress.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        asyncRequest.cancel()
     }
 
 }
