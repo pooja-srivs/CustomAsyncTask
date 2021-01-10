@@ -1,5 +1,6 @@
 package com.example.customasynctask
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -22,6 +23,10 @@ class MainActivity : AppCompatActivity(), DataReceiver {
         btn_cancel.setOnClickListener {
             asyncRequest.cancel()
         }
+
+        btn_next.setOnClickListener {
+            startActivity(Intent(this, MainActivity2::class.java))
+        }
     }
 
     override fun Response(message: String) {
@@ -43,7 +48,9 @@ class MainActivity : AppCompatActivity(), DataReceiver {
     override fun onPause() {
         super.onPause()
 
-        asyncRequest.cancel()
+        if(asyncRequest != null) {
+      //      asyncRequest.cancel()
+        }
     }
 
 }

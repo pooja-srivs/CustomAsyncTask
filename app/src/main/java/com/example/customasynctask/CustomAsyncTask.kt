@@ -19,12 +19,14 @@ class CustomAsyncTask(private val mHandler: DataReceiver) : IAsync<String, Int, 
     val TIMEOUT = 10*1000
 
     private lateinit var thread: Thread
+    private val handler : Handler = Handler(Looper.getMainLooper())
+
     fun execute(){
         thread = object : Thread() {
             override fun run() {
                 val result =  doInBackground("https://jsonplaceholder.typicode.com/todos/1")
 
-                Handler(Looper.getMainLooper()).post {
+                handler.post {
                     // this will run in the main thread
                     onPostExecute(result)
                 }
@@ -47,7 +49,7 @@ class CustomAsyncTask(private val mHandler: DataReceiver) : IAsync<String, Int, 
 
     override fun doInBackground(vararg many: String): String {
 
-        Handler(Looper.getMainLooper()).post(Runnable {
+        handler.post(Runnable {
             onPreExecute()
         })
 
@@ -92,4 +94,3 @@ interface DataReceiver{
     fun Response(message: String)
     fun progress(progress: Boolean)
 }
-
