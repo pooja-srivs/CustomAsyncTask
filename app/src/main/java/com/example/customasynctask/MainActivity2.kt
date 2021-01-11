@@ -19,6 +19,7 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
+        Log.d("*** Current Thread Count 1= ", ""+Thread.activeCount())
         val asyncTask = object : AsyncTaskResolver<String, Boolean, String>(){
 
             override fun doInBackground(vararg many: String): String {

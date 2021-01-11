@@ -7,7 +7,6 @@ import android.os.Looper
 class CustomAsyncTaskTwo{
 
     private lateinit var thread: Thread
-    private val handler : Handler = Handler(Looper.getMainLooper())
 
     fun execute(task : () -> Unit): CustomAsyncTaskTwo {
         thread = object : Thread() {
