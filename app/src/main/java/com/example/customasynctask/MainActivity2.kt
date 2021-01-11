@@ -21,9 +21,9 @@ class MainActivity2 : AppCompatActivity() {
 
         val asyncTask = object : AsyncTaskResolver<String, Boolean, String>(){
 
-            override fun doInBackground(many: String): String {
+            override fun doInBackground(vararg many: String): String {
   //              val httpClient = URL(many[0]).openConnection() as HttpURLConnection
-                val httpClient = URL(many).openConnection() as HttpURLConnection
+                val httpClient = URL(many[0]).openConnection() as HttpURLConnection
                 httpClient.setReadTimeout(TIMEOUT)
                 httpClient.setConnectTimeout(TIMEOUT)
                 httpClient.requestMethod = "GET"
@@ -76,5 +76,8 @@ class MainActivity2 : AppCompatActivity() {
             asyncTask.execute("https://jsonplaceholder.typicode.com/todos/1")
         }
 
+        btn_cancel.setOnClickListener {
+            asyncTask.cancel()
+        }
     }
 }
