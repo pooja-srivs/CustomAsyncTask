@@ -1,42 +1,56 @@
 package com.example.customasynctask
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Message
 import android.util.Log
+import android.view.View
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), CustomHandler.DataReceiver {
+class MainActivity : AppCompatActivity(), DataReceiver {
 
-    private lateinit var  networkCall : NetworkRequest
-    private lateinit var handler: CustomHandler
+    private val asyncRequest : CustomAsyncTask = CustomAsyncTask(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btn_lambda.setOnClickListener{
-            /*   operation(3, 5, object: MathOperation{
-                   override fun additionOperation(a: Int, b: Int) {
-                       Log.d("Http Addition Operation = ", ""+(a+b))
-                   }
-               })*/
+        btn_request.setOnClickListener{
 
-            handler = CustomHandler(this)
-            networkCall = NetworkRequest(handler)
+            asyncRequest.execute()
+        }
 
-            if (!networkCall.isAlive){
-                networkCall.start()
-            }
+        btn_cancel.setOnClickListener {
+            asyncRequest.cancel()
+        }
+
+        btn_next.setOnClickListener {
+            startActivity(Intent(this, MainActivity2::class.java))
         }
     }
 
+    override fun Response(message: String) {
 
-    override fun Response(message: Message) {
+        tv_result.setText(message)
 
-        Log.d("*** Message WHAT ***", ""+message.what)
-        Log.d("*** Message OBJ ***", ""+message.obj)
+        Log.d("*** Response Activity ***", ""+message)
 
+    }
+
+    override fun progress(showProgress: Boolean) {
+        if (showProgress){
+            progress.visibility = View.VISIBLE
+        }else {
+            progress.visibility = View.INVISIBLE
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        if(asyncRequest != null) {
+      //      asyncRequest.cancel()
+        }
     }
 
 }
