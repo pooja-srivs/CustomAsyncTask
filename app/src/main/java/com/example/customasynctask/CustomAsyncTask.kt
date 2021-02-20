@@ -25,28 +25,28 @@ class CustomAsyncTask{
     }
 }
 
-abstract class AsyncTaskResolver<T, P, R> {
+abstract class AsyncTaskResolver<Params, Progress, Result> {
 
     private val customAsyncTask = CustomAsyncTask()
 
-    abstract fun doInBackground(vararg many : T ) : R
-    abstract fun onPostExecute(data : R)
+    abstract fun doInBackground(vararg many : Params ) : Result
+    abstract fun onPostExecute(data : Result)
     abstract fun onPreExecute()
-    abstract fun onProgressUpdate(progress: P)
+    abstract fun onProgressUpdate(progress: Progress)
 
-    fun execute(url : T){
+    fun execute(vararg url : Params){
         val handler = Handler(Looper.getMainLooper())
-        var progress : P
+        var progress : Progress
         handler.post{
-            progress = true as P
+            progress = true as Progress
             onPreExecute()
             onProgressUpdate(progress)
         }
         customAsyncTask.execute{
-            val result =  runCatching { doInBackground(url) }.getOrNull()
+            val result =  runCatching { doInBackground(*url) }.getOrNull()
 
             handler.post{
-                progress = false as P
+                progress = false as Progress
                 onProgressUpdate(progress)
                 result?.let { onPostExecute(it) }
 

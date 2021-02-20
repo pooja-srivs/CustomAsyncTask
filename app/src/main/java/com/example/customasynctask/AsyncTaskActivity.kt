@@ -22,33 +22,7 @@ class AsyncTaskActivity : AppCompatActivity() {
         val asyncTask = object : AsyncTaskResolver<String, Boolean, String>(){
 
             override fun doInBackground(vararg many: String): String {
-                val httpClient = URL(many[0]).openConnection() as HttpURLConnection
-                httpClient.setReadTimeout(TIMEOUT)
-                httpClient.setConnectTimeout(TIMEOUT)
-                httpClient.requestMethod = "GET"
-
-                try {
-
-                    if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
-                        val stream = BufferedInputStream(httpClient.inputStream)
-                        val data: String = readStream(inputStream = stream)
-                        Log.d("*** Response doInBackground = ", " "+data)
-
-                        return data
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    httpClient.disconnect()
-                }
-                return ""
-            }
-
-            private fun readStream(inputStream: BufferedInputStream): String {
-                val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-                val stringBuilder = StringBuilder()
-                bufferedReader.forEachLine { stringBuilder.append(it) }
-                return stringBuilder.toString()
+               return networkRequest(many)
             }
 
             override fun onPostExecute(data: String) {
@@ -78,5 +52,39 @@ class AsyncTaskActivity : AppCompatActivity() {
         btn_cancel.setOnClickListener {
             asyncTask.cancel()
         }
+    }
+
+    private fun networkRequest(many: Array<out String>) : String{
+
+        val httpClient = URL(many[0]).openConnection() as HttpURLConnection
+
+        httpClient.apply {
+            setReadTimeout(TIMEOUT)
+            setConnectTimeout(TIMEOUT)
+            requestMethod = "GET"
+        }
+
+        try {
+
+            if (httpClient.responseCode == HttpURLConnection.HTTP_OK) {
+                val stream = BufferedInputStream(httpClient.inputStream)
+                val data: String = readStream(inputStream = stream)
+                Log.d("*** Response doInBackground = ", " "+data)
+
+                return data
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            httpClient.disconnect()
+        }
+        return ""
+    }
+
+    private fun readStream(inputStream: BufferedInputStream): String {
+        val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+        val stringBuilder = StringBuilder()
+        bufferedReader.forEachLine { stringBuilder.append(it) }
+        return stringBuilder.toString()
     }
 }
