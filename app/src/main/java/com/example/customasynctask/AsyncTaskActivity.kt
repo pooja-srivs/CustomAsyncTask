@@ -11,7 +11,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class MainActivity2 : AppCompatActivity() {
+class AsyncTaskActivity : AppCompatActivity() {
 
     private val TIMEOUT = 10*1000
 
@@ -19,11 +19,9 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
 
-        Log.d("*** Current Thread Count 1= ", ""+Thread.activeCount())
         val asyncTask = object : AsyncTaskResolver<String, Boolean, String>(){
 
             override fun doInBackground(vararg many: String): String {
-  //              val httpClient = URL(many[0]).openConnection() as HttpURLConnection
                 val httpClient = URL(many[0]).openConnection() as HttpURLConnection
                 httpClient.setReadTimeout(TIMEOUT)
                 httpClient.setConnectTimeout(TIMEOUT)
