@@ -4,11 +4,11 @@ import android.os.Handler
 import android.os.Looper
 
 
-class CustomAsyncTask{
+class ThreadSpawner{
 
     private lateinit var thread: Thread
 
-    fun execute(task : () -> Unit): CustomAsyncTask {
+    fun execute(task : () -> Unit): ThreadSpawner {
         thread = object : Thread() {
             override fun run() {
                 task.invoke()
@@ -22,12 +22,13 @@ class CustomAsyncTask{
 
     fun cancel(){
         thread.interrupt()
+        thread.stop()
     }
 }
 
 abstract class AsyncTaskResolver<Params, Progress, Result> {
 
-    private val customAsyncTask = CustomAsyncTask()
+    private val customAsyncTask = ThreadSpawner()
 
     abstract fun doInBackground(vararg many : Params ) : Result
     abstract fun onPostExecute(data : Result)
@@ -36,6 +37,7 @@ abstract class AsyncTaskResolver<Params, Progress, Result> {
 
     fun execute(vararg url : Params){
         val handler = Handler(Looper.getMainLooper())
+
         var progress : Progress
         handler.post{
             progress = true as Progress

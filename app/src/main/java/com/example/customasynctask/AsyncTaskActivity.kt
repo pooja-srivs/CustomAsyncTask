@@ -3,6 +3,7 @@ package com.example.customasynctask
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main2.*
 import java.io.BufferedInputStream
@@ -37,11 +38,8 @@ class AsyncTaskActivity : AppCompatActivity() {
             override fun onProgressUpdate(progress: Boolean) {
                 Log.d("**** onProgressUpdate = ", ""+progress)
 
-                if (progress){
-                    progress_two.visibility = View.VISIBLE
-                }else{
-                    progress_two.visibility = View.GONE
-                }
+                progress_two.visibility(progress)
+
             }
         }
 
@@ -87,4 +85,13 @@ class AsyncTaskActivity : AppCompatActivity() {
         bufferedReader.forEachLine { stringBuilder.append(it) }
         return stringBuilder.toString()
     }
+
+    fun ProgressBar.visibility(progress: Boolean) {
+            if (progress){
+                progress_two.visibility = View.VISIBLE
+            }else{
+                progress_two.visibility = View.GONE
+            }
+    }
+
 }
